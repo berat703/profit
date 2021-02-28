@@ -1,0 +1,65 @@
+service: profit
+frameworkVersion: '2'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: ${env:AWS_REGION, 'us-east-2'}
+  environment:
+    BALANCE_TABLE_NAME: ${self:custom.balanceTableName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - ${self:custom.balanceTableArn}
+
+custom:
+  balanceTableName: ${self:service}-${self:provider.stage}-balance
+  balanceTableArn:
+    Fn::Join:
+      - ":"
+      - - arn
+        - aws
+        - dynamodb
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - table/${self:custom.balanceTableName}
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  wallet:
+    handler: bin/wallet
+    environment:
+      BINANCE_API_KEY: ${env:BINANCE_API_KEY}
+      BINANCE_SECRET_KEY: ${env:BINANCE_SECRET_KEY}
+    events:
+      - http:
+          path: wallet
+          method: get
+resources:
+  Resources:
+    BalanceTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.balanceTableName}
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
