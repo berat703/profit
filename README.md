@@ -53,5 +53,4 @@ An example about success response
 ```
 
 ## TODO 
-- CRON (It should run per day)
 - Telegram Bot (To check daily, weekly, monthly profit)

@@ -45,6 +45,7 @@ functions:
       BINANCE_API_KEY: ${env:BINANCE_API_KEY}
       BINANCE_SECRET_KEY: ${env:BINANCE_SECRET_KEY}
     events:
+      - schedule: cron(0 0 ? * * *)
       - http:
           path: wallet
           method: get
