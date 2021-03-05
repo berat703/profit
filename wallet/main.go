@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	desiredAsset = "USDT"
+	usdCoins  = [...]string{"USDT", "BUSD"}
 	btcSymbol = "BTC"
 )
 
@@ -38,10 +38,11 @@ type wallet struct {
 	BalanceAsUSD float64 `json:"balance_as_usd"`
 	BalanceAsBTC float64 `json:"balance_as_btc"`
 	BtcUsd       float64 `json:"btc_usd"`
-	CreatedAt    int64  `json:"created_at"`
+	CreatedAt    int64   `json:"created_at"`
 }
 
 var ddb *dynamodb.DynamoDB
+
 func init() {
 	region := os.Getenv("AWS_REGION")
 	if session, err := session.NewSession(&aws.Config{ // Use aws sdk to connect to dynamoDB
@@ -74,13 +75,13 @@ func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProx
 	// Write to DynamoDB
 	item, _ := dynamodbattribute.MarshalMap(wallet)
 	input := &dynamodb.PutItemInput{
-		Item: item,
+		Item:      item,
 		TableName: tableName,
 	}
 
 	if _, err := ddb.PutItem(input); err != nil {
 		return events.APIGatewayProxyResponse{ // Error HTTP response
-			Body: err.Error(),
+			Body:       err.Error(),
 			StatusCode: 500,
 		}, nil
 	}
@@ -94,15 +95,15 @@ func getWallet(account *binance.Account) wallet {
 	var wallet wallet
 	id := uuid.Must(uuid.NewV4(), nil).String()
 	for i := 0; i < len(account.Balances); i++ {
-
-		if account.Balances[i].Asset == desiredAsset {
+		_, found := Find(usdCoins, account.Balances[i].Asset)
+		if found {
 			walletBalance = walletBalance + convertAndSumStringValuesAsFloat(account.Balances[i].Free, account.Balances[i].Locked)
 			continue
 		}
 
 		convertToBtc(account.Balances[i])
 	}
-	btcUsdParityPrice, _ := getTickerPrice(btcSymbol + desiredAsset)
+	btcUsdParityPrice, _ := getTickerPrice(btcSymbol + usdCoins[0])
 	walletBalance = walletBalance + (walletBalanceAsBtc * btcUsdParityPrice)
 	wallet.ID = id
 	wallet.BalanceAsUSD = walletBalance
@@ -119,15 +120,18 @@ func convertToBtc(balance binance.Balance) {
 	total := convertAndSumStringValuesAsFloat(balance.Free, balance.Locked)
 	totalAsBtc := total
 
+	if totalAsBtc <= 0 {
+		return
+	}
+
 	if balance.Asset != btcSymbol {
 		tickerPriceAsBtc, _ := getTickerPrice(balance.Asset + btcSymbol)
 		totalAsBtc = total * tickerPriceAsBtc
 	}
 
-	if totalAsBtc > 0 {
-		coins = append(coins, coin{Asset: balance.Asset, Balance: total, TotalAsBtc: totalAsBtc})
-		walletBalanceAsBtc = walletBalanceAsBtc + totalAsBtc
-	}
+	coins = append(coins, coin{Asset: balance.Asset, Balance: total, TotalAsBtc: totalAsBtc})
+	walletBalanceAsBtc = walletBalanceAsBtc + totalAsBtc
+
 }
 
 func convertAndSumStringValuesAsFloat(num1 string, num2 string) float64 {
@@ -148,3 +152,11 @@ func getTickerPrice(parity string) (idx float64, err error) {
 	return 1, err
 }
 
+func Find(slice [2]string, val string) (int, bool) {
+	for i, item := range slice {
+		if item == val {
+			return i, true
+		}
+	}
+	return -1, false
+}
