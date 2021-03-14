@@ -10,30 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"os"
+	"profit/exchanges"
 )
-
-var (
-	usdCoins  = [...]string{"USDT", "BUSD"}
-	btcSymbol = "BTC"
-)
-
-var coins []coin
-var walletBalanceAsBtc float64
-
-type coin struct {
-	Asset      string  `json:"asset"`
-	Balance    float64 `json:"balance"`
-	TotalAsBtc float64 `json:"total_as_btc"`
-}
-
-type wallet struct {
-	ID           string  `json:"id"`
-	Coins        []coin  `json:"coins"`
-	BalanceAsUSD float64 `json:"balance_as_usd"`
-	BalanceAsBTC float64 `json:"balance_as_btc"`
-	BtcUsd       float64 `json:"btc_usd"`
-	CreatedAt    int64   `json:"created_at"`
-}
 
 var ddb *dynamodb.DynamoDB
 
@@ -57,7 +35,7 @@ func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProx
 		tableName = aws.String(os.Getenv("BALANCE_TABLE_NAME"))
 	)
 
-	wallet := getWallet()
+	wallet := exchanges.GetWallet()
 	// Write to DynamoDB
 	item, _ := dynamodbattribute.MarshalMap(wallet)
 	input := &dynamodb.PutItemInput{

@@ -1,4 +1,4 @@
-package main
+package exchanges
 
 import (
 	"context"
@@ -7,8 +7,17 @@ import (
 	"github.com/Akagi201/cryptotrader/model"
 	uuid "github.com/satori/go.uuid"
 	"os"
+	baseModel "profit/model"
 	"time"
 )
+
+var (
+	usdCoins  = [...]string{"USDT", "BUSD"}
+	btcSymbol = "BTC"
+)
+
+var coins []baseModel.Coin
+var walletBalanceAsBtc float64
 
 var prices []model.SimpleTicker
 var client *binance.Client
@@ -41,9 +50,9 @@ func retrieveBalances() []model.Balance {
 	return balances
 }
 
-func getWallet() wallet {
+func GetWallet() baseModel.Wallet {
 	var walletBalance float64
-	var wallet wallet
+	var wallet baseModel.Wallet
 	id := uuid.Must(uuid.NewV4(), nil).String()
 
 	var balances []model.Balance = retrieveBalances()
@@ -83,7 +92,7 @@ func addToWallet(balance model.Balance) {
 		totalAsBtc = total * tickerPriceAsBtc
 	}
 
-	coins = append(coins, coin{Asset: balance.Currency, Balance: total, TotalAsBtc: totalAsBtc})
+	coins = append(coins, baseModel.Coin{Asset: balance.Currency, Balance: total, TotalAsBtc: totalAsBtc})
 	walletBalanceAsBtc = walletBalanceAsBtc + totalAsBtc
 }
 
