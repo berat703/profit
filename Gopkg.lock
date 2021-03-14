@@ -2,17 +2,26 @@
 
 
 [[projects]]
-  digest = "1:1f31379dc38d4aa5059fe51ef7e31e706009f04249b1fa23166d3f4bded97daa"
-  name = "github.com/adshao/go-binance"
+  branch = "master"
+  digest = "1:8a8cec3a9b589c7c5c8b84bbc40e00d2c0542a66e87e2f706cb5c06a078b1ce2"
+  name = "github.com/Akagi201/cryptotrader"
   packages = [
-    "v2",
-    "v2/common",
-    "v2/delivery",
-    "v2/futures",
+    "binance",
+    "model",
   ]
   pruneopts = ""
-  revision = "9a93e4877e3018fa2737ab6a0d578385450eb2b8"
-  version = "v2.2.1"
+  revision = "a58d1deef09dd1fa3737284dec47337ecbccb2ac"
+
+[[projects]]
+  branch = "master"
+  digest = "1:ac90c8f176adfe0fc6eadb8e9333d4b991a176000bf121cdbe7f707236a7e9d6"
+  name = "github.com/Akagi201/utilgo"
+  packages = [
+    "enums",
+    "signs",
+  ]
+  pruneopts = ""
+  revision = "e0aed8b5a58bc09d0e80651d3c2bf772a1b4acee"
 
 [[projects]]
   digest = "1:659451ee49640f3ec7ecc30cfc64aa7104241c9b93d96848cc1eae025d891f8b"
@@ -81,22 +90,6 @@
   version = "v1.37.20"
 
 [[projects]]
-  digest = "1:512883404c2a99156e410e9880e3bb35ecccc0c07c1159eb204b5f3ef3c431b3"
-  name = "github.com/bitly/go-simplejson"
-  packages = ["."]
-  pruneopts = ""
-  revision = "aabad6e819789e569bd6aabf444c935aa9ba1e44"
-  version = "v0.5.0"
-
-[[projects]]
-  digest = "1:5122b0b5a933bd0e16b887aa7844933c8a09fb5ba9b5f5651253cb5336c6462a"
-  name = "github.com/gorilla/websocket"
-  packages = ["."]
-  pruneopts = ""
-  revision = "b65e62901fc1c0d968042419e74789f6af455eb9"
-  version = "v1.4.2"
-
-[[projects]]
   digest = "1:13fe471d0ed891e8544eddfeeb0471fd3c9f2015609a1c000aefdedf52a19d40"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
@@ -111,11 +104,64 @@
   revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
   version = "v1.2.0"
 
+[[projects]]
+  digest = "1:9914325226e5e662d76193dcba4cdd3f1cc02098431cb92fa5ae35505005ff74"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = ""
+  revision = "bdc0db8ead3853c56b7cd1ac2ba4e11b47d7da6b"
+  version = "v1.8.1"
+
+[[projects]]
+  digest = "1:0a3d8f7dc17afdc30a5a5becb45fb91ff28aaa64645c69836ccd600d88e9ed9e"
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  pruneopts = ""
+  revision = "1ffadf551085444af981432dd0f6d1160c11ec64"
+  version = "v1.3.1"
+
+[[projects]]
+  digest = "1:4530bb5bc37e2599a6d948f9f0c763cd649ce25e0408a83136d7a1f80c23e5c5"
+  name = "github.com/tidwall/gjson"
+  packages = ["."]
+  pruneopts = ""
+  revision = "65353b6d52a31e808c07f9d4651b9473525dcd88"
+  version = "v1.6.8"
+
+[[projects]]
+  digest = "1:4a6d69ae80faabca22bb556cadac2139a4499fa154106c8fed331c61b37c84c7"
+  name = "github.com/tidwall/match"
+  packages = ["."]
+  pruneopts = ""
+  revision = "c2f534168b739a7ec1821a33839fb2f029f26bbc"
+  version = "v1.0.3"
+
+[[projects]]
+  digest = "1:3aeb379405489ad765826cd56d4c5af1d94bf0afee4f75afb92020d22da73a05"
+  name = "github.com/tidwall/pretty"
+  packages = ["."]
+  pruneopts = ""
+  revision = "b87289d70a916a208a3e43f79e4a033337f114cf"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:bbb23be09aa62b638e8a496e8908ad42742c2883a54f3d1e898da1c388b46c70"
+  name = "golang.org/x/sys"
+  packages = [
+    "internal/unsafeheader",
+    "unix",
+    "windows",
+  ]
+  pruneopts = ""
+  revision = "68d13333faf24bbe12c06419ed07e851a9dbf8f9"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/adshao/go-binance/v2",
+    "github.com/Akagi201/cryptotrader/binance",
+    "github.com/Akagi201/cryptotrader/model",
     "github.com/aws/aws-lambda-go/events",
     "github.com/aws/aws-lambda-go/lambda",
     "github.com/aws/aws-sdk-go/aws",

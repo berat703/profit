@@ -54,3 +54,4 @@ An example about success response
 
 ## TODO 
 - Telegram Bot (To check daily, weekly, monthly profit)
+- Bittrex, Gate.io, Kucoin and other popular exchange markets support
